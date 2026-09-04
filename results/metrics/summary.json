@@ -17,6 +17,24 @@
       "std": 0.2774467446465986
     }
   },
+  "sac_window_level": {
+    "grid_consumption_kwh": {
+      "mean": 56.39974863733902,
+      "std": 14.021717441353067
+    },
+    "solar_self_consumption_pct": {
+      "mean": 51.49541779181759,
+      "std": 9.749089683581541
+    },
+    "electricity_cost": {
+      "mean": 9.107553841287055,
+      "std": 5.753411098173022
+    },
+    "peak_demand_kw": {
+      "mean": 4.8298387977812025,
+      "std": 1.727912947548093
+    }
+  },
   "baseline": {
     "grid_consumption_kwh": {
       "mean": 54.36395007898171,

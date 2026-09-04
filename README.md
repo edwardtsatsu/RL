@@ -110,7 +110,9 @@ non-overlapping, held-out 72-step windows (`src/environment.py`'s
 `eval_window_bounds`), through identical evaluation and metric code
 (`src/evaluate.py`, `src/metrics.py`). Writes
 `results/metrics/baseline.json`, `results/metrics/sac_seed{N}.json`, and
-the aggregated `results/metrics/summary.json`.
+the aggregated `results/metrics/summary.json` (three blocks: `sac` —
+seed-level, `sac_window_level` — pooled across all 3×30 episodes, and
+`baseline`; see Results overview for which to use when).
 
 ## Reproducing the figures
 
@@ -124,7 +126,7 @@ Regenerates both figures directly from already-committed result files
 | Figure | Traces back to |
 |---|---|
 | `results/figures/training_curves.png` — mean ± std episode return across the 3 seeds over training | `results/logs/seed0.monitor.csv`, `seed1.monitor.csv`, `seed2.monitor.csv` |
-| `results/figures/baseline_comparison.png` — SAC vs. rule-based baseline, all 4 metrics, mean ± std error bars | `results/metrics/summary.json` |
+| `results/figures/baseline_comparison.png` — SAC vs. rule-based baseline, all 4 metrics; error bars are ± 1 std across individual held-out evaluation episodes for **both** series (`sac_window_level` vs `baseline`), so the two spreads are the same statistic | `results/metrics/summary.json` |
 
 ## One-command reproduction
 
@@ -143,37 +145,112 @@ fixed seeds, across machines/library-version drift).
 
 ## Results overview
 
-Real evaluation results from the committed run (`results/metrics/summary.json`),
-SAC (mean ± std across 3 seeds) vs. rule-based baseline (mean ± std across
-the 30 held-out evaluation windows):
+Real evaluation results from the committed run (`results/metrics/summary.json`).
+`summary.json` carries three blocks, and the distinction matters for every
+claim below:
 
-| Metric | SAC | Baseline |
+| `summary.json` key | What it is | n |
+|---|---|---|
+| `sac` | mean, and **std across the 3 trained seeds** of each seed's own mean over its 30 windows | 3 seeds |
+| `sac_window_level` | mean, and **std across individual evaluation episodes**, pooling all 3 seeds × 30 windows | 90 episodes |
+| `baseline` | mean, and **std across individual evaluation episodes** for the single deterministic baseline policy | 30 episodes |
+
+The baseline has no seed dimension by construction (it is a fixed rule, no
+learned parameters, evaluated once), so it has no seed-level counterpart.
+
+### Headline: means, with SAC's seed-level variation (the exam-required stat)
+
+SAC as mean ± std **across the 3 seeds** (n=3); baseline mean ± std across
+its 30 held-out windows (n=30). These two `±` figures are **different
+statistics** — see the like-for-like table below before comparing spreads.
+
+| Metric | SAC (seed-level) | Baseline (window-level) |
 |---|---|---|
 | Electricity cost | 9.11 ± 0.41 | 10.60 ± 5.68 |
 | Grid consumption (kWh) | 56.40 ± 0.89 | 54.36 ± 13.67 |
 | Peak demand (kW) | 4.83 ± 0.28 | 4.66 ± 1.69 |
 | Solar self-consumption (%) | 51.50 ± 0.93 | 62.84 ± 8.90 |
 
-Read honestly: at this training budget (150,000 steps/seed, explicitly
+On the means: at this training budget (150,000 steps/seed, explicitly
 scoped down from published-benchmark scale — see
 `docs/mdp_formulation.md` §7), SAC does not clearly outperform the
-rule-based baseline on every metric — it is lower on electricity cost, but
-higher on grid consumption and does not beat the baseline's mean
-self-consumption. What SAC does show consistently is **markedly lower
-variance** across seeds than the baseline shows across windows on 3 of
-the 4 metrics (cost, grid consumption, peak demand). This is reported as
-found, not adjusted to look better.
+rule-based baseline. It is lower on electricity cost (9.11 vs 10.60), but
+higher on grid consumption (56.40 vs 54.36), nominally higher on peak
+demand (4.83 vs 4.66 — a gap that does *not* exceed seed variation, so no
+difference is claimed there; see below), and well below the baseline's
+mean self-consumption (51.50% vs 62.84%). Reported as found, not adjusted
+to look better.
 
-**Two caveats needed to read these numbers correctly:**
+### Like-for-like spread: SAC's window-level std vs. the baseline's
 
-1. **The `std` columns above are not the same statistic.** SAC's `std` is
-   the standard deviation, across the 3 trained seeds, of each seed's own
-   mean over its 30 eval windows (n=3) — seed-to-seed variability. The
-   baseline's `std` is the standard deviation across the 30 held-out
-   windows for one deterministic policy (n=30) — window-to-window
-   variability, because the baseline has no seed dimension by
-   construction (it was only evaluated once). They share a JSON field
-   name (`std`) but are not directly comparable spreads. Full detail in
+Comparing the two `±` columns above directly would be a methodological
+error — they measure different things, and doing so would make SAC look
+far more stable than it is. Measured on the **same basis** as the
+baseline (spread across individual held-out evaluation episodes;
+`summary["sac_window_level"]` vs `summary["baseline"]`):
+
+| Metric | SAC std (90 episodes) | Baseline std (30 episodes) | Verdict |
+|---|---|---|---|
+| Electricity cost | 5.75 | 5.68 | comparable (SAC 1% wider) |
+| Grid consumption (kWh) | 14.02 | 13.67 | comparable (SAC 3% wider) |
+| Peak demand (kW) | 1.73 | 1.69 | comparable (SAC 2% wider) |
+| Solar self-consumption (%) | 9.75 | 8.90 | comparable (SAC 10% wider) |
+
+**SAC's episode-to-episode spread is not lower than the baseline's — it is
+marginally wider on all four metrics.** An earlier version of this README
+claimed SAC showed "markedly lower variance"; that claim came from
+comparing SAC's seed-level std (n=3) against the baseline's window-level
+std (n=30), which is not a valid comparison, and it does not survive
+measuring both on the same basis. Both policies are driven by the same
+30 held-out weather/price/demand windows, and that window-to-window
+variation dominates the spread for both — which is exactly what these
+closely matched stds show. (SAC's pooled std technically absorbs its
+small seed-to-seed component as well as window-to-window variation; given
+how small the seed-level std is relative to these figures, that inflates
+SAC's number only marginally — it does not explain the gap away in SAC's
+favour.)
+
+What the small `sac` seed-level std (0.28–0.93 across metrics) *does*
+legitimately say is that the three training seeds converged to policies
+that behave very similarly to one another — i.e. training was reproducible
+across seeds. It says nothing about how stable either policy is from
+window to window.
+
+### Does the SAC-vs-baseline difference exceed the variation across seeds?
+
+The exam (Part A §6) requires this statement explicitly. Comparing the
+absolute gap in means against SAC's **seed-level** std (n=3,
+`summary["sac"]`):
+
+| Metric | SAC mean | Baseline mean | \|gap\| | SAC seed std | Exceeds seed variation? |
+|---|---|---|---|---|---|
+| Electricity cost | 9.11 | 10.60 | 1.50 | 0.41 | Yes (≈3.7× the seed std) — SAC better |
+| Grid consumption (kWh) | 56.40 | 54.36 | 2.04 | 0.89 | Yes (≈2.3×) — SAC worse |
+| Peak demand (kW) | 4.83 | 4.66 | 0.17 | 0.28 | **No** (≈0.6×) — within seed noise, no difference claimed |
+| Solar self-consumption (%) | 51.50 | 62.84 | 11.34 | 0.93 | Yes (≈12.2×) — SAC worse |
+
+So: on peak demand the observed difference does **not** exceed the
+variation across seeds, and no difference is claimed there. On the other
+three metrics the gap does exceed SAC's seed-level std — but **three seeds
+cannot support a strong statistical claim**, and this project does not
+make one. With n=3 the seed std is itself estimated from three points; it
+has no meaningful confidence interval, supports no significance test, and
+a single unlucky or lucky seed would move it substantially. These
+"exceeds" verdicts should be read as *suggestive, direction-consistent
+across all three seeds*, not as statistically established. Establishing
+them would need substantially more seeds (typically 10+) and a paired
+per-window test against the baseline, which is beyond this exam's compute
+budget.
+
+**Two further caveats needed to read these numbers correctly:**
+
+1. **`sac`'s `std` and `baseline`'s `std` share a JSON field name but are
+   not the same statistic.** This is inherent to comparing a
+   stochastically-trained agent against a deterministic rule-based
+   baseline, not a bug — the baseline genuinely has no seed dimension.
+   The `sac_window_level` block was added precisely so a like-for-like
+   spread comparison is possible; use it, not `sac`, whenever comparing
+   spread against the baseline. Full detail in
    `docs/mdp_formulation.md` §5.
 2. **The reward term intended to encourage solar self-consumption
    (`src/reward.py`, `self_consumption_weight · min(solar, demand)`) is
@@ -233,10 +310,16 @@ reinforcementProject/
   actor/critics) used for training (`src/train.py`) and deterministic
   policy evaluation (`src/evaluate.py`). Not modified; used as an
   installed library.
-- **Original work**: the reward function (`src/reward.py`), the
-  rule-based baseline controller (`src/baseline.py`, not derived from
+- **Original to this project — not derived from CityLearn's or
+  Stable-Baselines3's own code, nor from any third-party reference
+  implementation**: the reward function (`src/reward.py`), the rule-based
+  baseline controller (`src/baseline.py`, in particular not derived from
   CityLearn's own RBC classes), the environment factory and train/eval
   window construction (`src/environment.py`), the metric computation and
   aggregation (`src/metrics.py`), the training/evaluation/plotting entry
   points (`src/train.py`, `src/evaluate.py`, `src/plotting.py`), and this
-  documentation.
+  documentation. This statement is about *provenance* (nothing here is
+  copied or adapted from another codebase), not about the authoring
+  process; the exam's required disclosure of how this work was produced
+  belongs in the separate `AI_Use_Declaration` document, which is out of
+  scope for this repository.

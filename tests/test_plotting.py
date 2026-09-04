@@ -2,7 +2,6 @@ import json
 
 import numpy as np
 import pandas as pd
-import pytest
 
 from src.plotting import (
     interpolate_curves,
@@ -48,6 +47,7 @@ def test_plot_training_curves_writes_a_png(tmp_path):
 def test_plot_baseline_comparison_writes_a_png(tmp_path):
     summary = {
         "sac": {"grid_consumption_kwh": {"mean": 10.0, "std": 1.0}},
+        "sac_window_level": {"grid_consumption_kwh": {"mean": 10.0, "std": 3.0}},
         "baseline": {"grid_consumption_kwh": {"mean": 12.0, "std": 0.0}},
     }
     summary_path = tmp_path / "summary.json"

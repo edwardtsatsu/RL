@@ -91,15 +91,21 @@ def main():
     baseline_aggregate = aggregate_metrics(baseline_results)
 
     sac_aggregates = []
+    sac_pooled_results: List[Dict[str, float]] = []
     for seed in seeds:
         print(f"=== Evaluating SAC seed {seed} ===")
         model = SAC.load(MODELS_DIR / f"sac_seed{seed}.zip")
         results = evaluate_policy(sac_act_fn(model), **eval_kwargs)
         save_metrics(METRICS_DIR / f"sac_seed{seed}.json", results)
         sac_aggregates.append(aggregate_metrics(results))
+        sac_pooled_results.extend(results)
 
+    # "sac" is the seed-level statistic the exam asks for (std over the 3 per-seed
+    # means). "sac_window_level" pools every SAC evaluation episode (seeds x windows)
+    # so its std is the same statistic as the baseline's — window-to-window spread.
     summary = {
         "sac": aggregate_across_seeds(sac_aggregates),
+        "sac_window_level": aggregate_metrics(sac_pooled_results),
         "baseline": baseline_aggregate,
     }
     save_metrics(METRICS_DIR / "summary.json", summary)

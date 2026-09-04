@@ -215,6 +215,19 @@ under the exam's own required protocol, not a bug, but it must be flagged
 wherever these numbers are quoted (see also `README.md`'s results
 section).
 
+To make a like-for-like spread comparison possible at all,
+`summary.json` also carries a third block, **`sac_window_level`**
+(`src/evaluate.py` pools every SAC evaluation episode — 3 seeds × 30
+windows = 90 — and passes the pooled list to
+`src/metrics.py::aggregate_metrics`). Its `std` is measured on exactly
+the same basis as the baseline's: spread across individual held-out
+evaluation episodes. Measured that way, SAC's spread is marginally
+*wider* than the baseline's on all four metrics, not narrower — the
+window-to-window variation of the held-out weather/price/demand data
+dominates for both policies. `summary["sac"]` remains the exam-required
+cross-seed statistic; `summary["sac_window_level"]` is the one to use
+whenever comparing spread against the baseline.
+
 ## 6. Discount factor
 
 `γ = 0.99` (`configs/sac_config.yaml::sac.gamma`, the Stable-Baselines3

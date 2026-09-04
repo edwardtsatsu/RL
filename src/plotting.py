@@ -1,5 +1,6 @@
 """Figure generation: training curves (mean +/- std across seeds) and a
-baseline-vs-agent bar chart with error bars, regenerated from the committed
+baseline-vs-agent bar chart whose error bars are +/- 1 std across individual
+evaluation episodes for both series, regenerated from the committed
 results/logs and results/metrics data (never from re-running training/eval).
 """
 import json
@@ -73,20 +74,37 @@ def plot_baseline_comparison(summary_path: Path = None, output_path: Path = None
     with open(summary_path) as f:
         summary = json.load(f)
 
-    metric_keys = list(summary["sac"].keys())
-    sac_means = [summary["sac"][k]["mean"] for k in metric_keys]
-    sac_stds = [summary["sac"][k]["std"] for k in metric_keys]
-    baseline_means = [summary["baseline"][k]["mean"] for k in metric_keys]
-    baseline_stds = [summary["baseline"][k]["std"] for k in metric_keys]
+    # Both series use the same statistic: spread across individual evaluation
+    # episodes. SAC's seed-level std (summary["sac"]) is a different statistic
+    # (n=3 per-seed means) and is deliberately not plotted against the
+    # baseline's, which has no seed dimension. See README's results section.
+    sac = summary["sac_window_level"]
+    baseline = summary["baseline"]
+
+    metric_keys = list(sac.keys())
+    sac_means = [sac[k]["mean"] for k in metric_keys]
+    sac_stds = [sac[k]["std"] for k in metric_keys]
+    baseline_means = [baseline[k]["mean"] for k in metric_keys]
+    baseline_stds = [baseline[k]["std"] for k in metric_keys]
 
     x = np.arange(len(metric_keys))
     width = 0.35
     fig, ax = plt.subplots(figsize=(10, 5))
-    ax.bar(x - width / 2, sac_means, width, yerr=sac_stds, label="SAC", capsize=4)
-    ax.bar(x + width / 2, baseline_means, width, yerr=baseline_stds, label="Rule-based baseline", capsize=4)
+    ax.bar(x - width / 2, sac_means, width, yerr=sac_stds, capsize=4, label="SAC (all seeds x windows)")
+    ax.bar(
+        x + width / 2,
+        baseline_means,
+        width,
+        yerr=baseline_stds,
+        capsize=4,
+        label="Rule-based baseline (windows)",
+    )
     ax.set_xticks(x)
     ax.set_xticklabels(metric_keys, rotation=30, ha="right")
-    ax.set_title("SAC vs. rule-based baseline (mean +/- std across seeds)")
+    ax.set_title(
+        "SAC vs. rule-based baseline\n"
+        "bars: mean; error bars: +/- 1 std across individual held-out evaluation episodes"
+    )
     ax.legend()
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
