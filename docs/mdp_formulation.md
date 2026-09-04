@@ -244,6 +244,35 @@ per seed (22 × 6551 = 144,122 logged steps), plus a final partial episode
 from published-benchmark scale, per the exam's own compute-constraint
 allowance, and is not hidden in the report.
 
+### Full SAC hyperparameter table
+
+Every argument passed to Stable-Baselines3's `SAC` constructor
+(`src/train.py::train_one_seed`), sourced from `configs/sac_config.yaml`
+— the single source of truth — reproduced here explicitly rather than
+only referenced by file, per the exam's requirement that every
+hyperparameter be stated:
+
+| Hyperparameter | Value | vs. SB3 2.3.2 default |
+|---|---|---|
+| Policy | `"MlpPolicy"` | default |
+| `learning_rate` | 0.0003 | default |
+| `buffer_size` | 1,000,000 | default |
+| `learning_starts` | 100 | default |
+| `batch_size` | 256 | default |
+| `tau` | 0.005 | default |
+| `gamma` | 0.99 | default |
+| `train_freq` | 1 | default |
+| `gradient_steps` | 1 | default |
+| `ent_coef` | `"auto"` | default |
+| `total_timesteps` | 150,000 | **deviation** — scoped down from benchmark scale for the exam's compute budget (§7 above) |
+| `seed` | 0, 1, 2 (one run each) | **deviation** — the only per-run-varying argument; everything else held constant across all 3 seeds |
+
+Every value above except `total_timesteps` and `seed` matches the
+Stable-Baselines3 2.3.2 library default for `SAC` — the config file lists
+them explicitly anyway (rather than leaving them implicit) precisely so
+this table can state "nothing hidden was left unconfigured," not because
+any of them were tuned away from the default.
+
 ## 8. Markov property
 
 Two design choices are relevant to whether `s_t` is a sufficient

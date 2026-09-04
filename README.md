@@ -47,6 +47,30 @@ Verify the install:
 python -m pytest tests/ -v
 ```
 
+### Note: dataset loading avoids CityLearn's own GitHub rate-limit bug
+
+CityLearn's usual documented pattern is
+`CityLearnEnv("citylearn_challenge_2022_phase_1", ...)` — passing the
+dataset **name as a string**. This project's `src/environment.py`
+(`build_env`) does **not** do that; it instead pre-resolves the dataset
+with `DataSet().get_schema(DATASET_NAME)` and passes the resulting
+**schema dict** to `CityLearnEnv`. This is a deliberate workaround, not a
+stylistic choice: `CityLearnEnv._load`'s string-schema code path validates
+the name against `DataSet.get_dataset_names()`, which — due to a caching
+bug in the installed `citylearn==2.5.0` — calls the GitHub API
+*unconditionally* on every invocation regardless of its own local cache.
+Since every `CityLearnEnv(...)` construction in this project (training,
+each of the 30 evaluation windows, per seed, per policy) would otherwise
+trigger one such call, this exhausts an unauthenticated GitHub API rate
+limit quickly once training/evaluation run repeatedly. Passing a
+pre-resolved schema dict instead of the string skips that validation path
+entirely — same resulting environment, no network dependency. If you
+copy the string-based pattern from CityLearn's own docs/examples instead
+of using `src/environment.py::build_env`, you will hit this rate limit
+differently (and possibly less predictably, since it depends on how much
+of the unauthenticated GitHub quota is already used from other activity
+on the same IP).
+
 ## Training
 
 Train all 3 seeds for the full configured budget (150,000 environment
