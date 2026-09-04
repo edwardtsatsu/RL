@@ -1,5 +1,3 @@
-import numpy as np
-
 from src.baseline import RuleBasedBatteryController
 from src.evaluate import baseline_act_fn, evaluate_policy, run_episode
 from src.environment import build_env, eval_window_bounds
