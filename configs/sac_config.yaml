@@ -15,7 +15,7 @@ eval_num_windows: 30
 
 # Every key below is an explicit SB3 SAC constructor argument. Values match
 # the SB3 2.3.2 default except total_timesteps and seed (set per-run, not
-# stored here) — the exam requires every hyperparameter to be stated, so all
+# stored here). The exam requires every hyperparameter to be stated, so all
 # of them are listed even where unchanged from the library default.
 sac:
   learning_rate: 0.0003

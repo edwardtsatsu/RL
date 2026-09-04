@@ -1,4 +1,4 @@
-"""Original rule-based battery controller — the exam's required SAC-1 baseline.
+"""Original rule-based battery controller, the exam's required SAC-1 baseline.
 
 Not derived from CityLearn's own RBC classes: this is a from-scratch policy
 with the same act(...) -> action interface the evaluation harness uses for

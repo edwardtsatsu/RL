@@ -69,7 +69,7 @@ def build_env(
     """Build a single-building CityLearnEnv for a fixed [start, end] time-step window."""
     reward_kwargs = reward_kwargs if reward_kwargs is not None else REWARD_KWARGS_DEFAULT
 
-    # Pass a resolved schema dict, not the dataset name string — CityLearnEnv._load validates a string schema against DataSet.get_dataset_names(), which has a caching bug in citylearn==2.5.0 that hits the GitHub API unconditionally on every call and exhausts the unauthenticated rate limit.
+    # Pass a resolved schema dict, not the dataset name string: CityLearnEnv._load validates a string schema against DataSet.get_dataset_names(), which has a caching bug in citylearn==2.5.0 that hits the GitHub API unconditionally on every call and exhausts the unauthenticated rate limit.
     schema = DataSet().get_schema(DATASET_NAME)
     env = CityLearnEnv(
         schema,

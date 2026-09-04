@@ -102,7 +102,7 @@ def main():
 
     # "sac" is the seed-level statistic the exam asks for (std over the 3 per-seed
     # means). "sac_window_level" pools every SAC evaluation episode (seeds x windows)
-    # so its std is the same statistic as the baseline's — window-to-window spread.
+    # so its std is the same statistic as the baseline's: window-to-window spread.
     summary = {
         "sac": aggregate_across_seeds(sac_aggregates),
         "sac_window_level": aggregate_metrics(sac_pooled_results),

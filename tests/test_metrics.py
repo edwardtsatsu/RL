@@ -45,7 +45,7 @@ def test_compute_episode_metrics_known_values():
 
 def test_compute_episode_metrics_handles_citylearns_negative_solar_convention():
     # CityLearn's real Building.solar_generation is negative-valued (generation
-    # reduces net consumption) — this reproduces that convention directly.
+    # reduces net consumption). This reproduces that convention directly.
     building = _StubBuilding(
         consumption=[2.0, -1.0, 3.0],
         prices=[0.1, 0.2, 0.3],

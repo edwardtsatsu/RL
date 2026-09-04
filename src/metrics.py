@@ -21,7 +21,7 @@ def compute_episode_metrics(building) -> Dict[str, float]:
     total_solar = solar.sum()
     # Self-consumption = generation actually used on-site (directly or via battery
     # buffering) rather than exported to the grid. This depends on the battery's
-    # charge/discharge action (via `consumption`, which already reflects it) —
+    # charge/discharge action (via `consumption`, which already reflects it),
     # unlike a naive min(solar, demand) overlap, which is policy-invariant and
     # cannot distinguish a trained agent from an untrained baseline.
     grid_export = np.clip(-consumption, 0, None)
