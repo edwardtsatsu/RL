@@ -73,6 +73,11 @@ def test_aggregate_metrics_rejects_empty_input():
         aggregate_metrics([])
 
 
+def test_aggregate_across_seeds_rejects_empty_input():
+    with pytest.raises(ValueError):
+        aggregate_across_seeds([])
+
+
 def test_aggregate_across_seeds_computes_mean_and_std_of_seed_means():
     seed_means = [
         {"grid_consumption_kwh": {"mean": 10.0, "std": 1.0}},
