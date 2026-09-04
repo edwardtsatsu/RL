@@ -37,8 +37,9 @@ def test_compute_episode_metrics_known_values():
     assert metrics["grid_consumption_kwh"] == pytest.approx(2.0 + 0.0 + 3.0)
     assert metrics["peak_demand_kw"] == pytest.approx(3.0)
     assert metrics["electricity_cost"] == pytest.approx(2.0 * 0.1 + (-1.0) * 0.2 + 3.0 * 0.3)
-    # self-consumption: min(solar, demand) summed / total solar generated
-    expected_self_consumption_pct = (0.0 + 2.0 + 0.0) / 3.0 * 100
+    # self-consumption: (total solar - total grid export) / total solar generated.
+    # Grid export per step = max(0, -consumption): [0, 1.0, 0] here, summing to 1.0.
+    expected_self_consumption_pct = (3.0 - 1.0) / 3.0 * 100
     assert metrics["solar_self_consumption_pct"] == pytest.approx(expected_self_consumption_pct)
 
 
@@ -72,6 +73,24 @@ def test_compute_episode_metrics_handles_zero_solar_without_dividing_by_zero():
     metrics = compute_episode_metrics(building)
 
     assert metrics["solar_self_consumption_pct"] == 0.0
+
+
+def test_compute_episode_metrics_credits_battery_charging_as_self_consumption():
+    # Demand is 0 but net consumption is 0 too (the battery fully absorbs the
+    # generated solar with no grid export). A naive demand-overlap formula
+    # would wrongly say 0% self-consumption here (min(solar, demand=0) = 0);
+    # the correct (export-based) formula must recognise the battery-absorbed
+    # solar as fully self-consumed.
+    building = _StubBuilding(
+        consumption=[0.0],
+        prices=[0.1],
+        solar=[-5.0],  # CityLearn's negative-value convention; magnitude 5.0
+        demand=[0.0],
+    )
+
+    metrics = compute_episode_metrics(building)
+
+    assert metrics["solar_self_consumption_pct"] == pytest.approx(100.0)
 
 
 def test_aggregate_metrics_computes_mean_and_std():

@@ -16,15 +16,20 @@ def compute_episode_metrics(building) -> Dict[str, float]:
     pricing = np.array(building.pricing.electricity_pricing[: len(consumption)], dtype=float)
     # CityLearn's Building.solar_generation is a negative-value convention (generation reduces net consumption); take magnitude for a physical kW figure.
     solar = np.abs(np.array(building.solar_generation, dtype=float))
-    demand = np.array(building.non_shiftable_load, dtype=float)
 
     grid_import = np.clip(consumption, 0, None)
-    self_consumed = np.minimum(solar, demand)
     total_solar = solar.sum()
+    # Self-consumption = generation actually used on-site (directly or via battery
+    # buffering) rather than exported to the grid. This depends on the battery's
+    # charge/discharge action (via `consumption`, which already reflects it) —
+    # unlike a naive min(solar, demand) overlap, which is policy-invariant and
+    # cannot distinguish a trained agent from an untrained baseline.
+    grid_export = np.clip(-consumption, 0, None)
+    self_consumed_solar = total_solar - grid_export.sum()
 
     return {
         "grid_consumption_kwh": float(grid_import.sum()),
-        "solar_self_consumption_pct": float(self_consumed.sum() / total_solar * 100) if total_solar > 0 else 0.0,
+        "solar_self_consumption_pct": float(self_consumed_solar / total_solar * 100) if total_solar > 0 else 0.0,
         "electricity_cost": float((consumption * pricing).sum()),
         "peak_demand_kw": float(grid_import.max()),
     }
