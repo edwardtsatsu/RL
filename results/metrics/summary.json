@@ -5,7 +5,7 @@
       "std": 0.8949456536827032
     },
     "solar_self_consumption_pct": {
-      "mean": 0.0,
+      "mean": 53.10646082766876,
       "std": 0.0
     },
     "electricity_cost": {
@@ -23,8 +23,8 @@
       "std": 13.668962932660095
     },
     "solar_self_consumption_pct": {
-      "mean": 0.0,
-      "std": 0.0
+      "mean": 53.10646082766876,
+      "std": 9.109583381661484
     },
     "electricity_cost": {
       "mean": 10.602916287599653,
