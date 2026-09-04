@@ -14,7 +14,8 @@ def compute_episode_metrics(building) -> Dict[str, float]:
     """Compute the required evaluation metrics from a completed CityLearn episode."""
     consumption = np.array(building.net_electricity_consumption, dtype=float)
     pricing = np.array(building.pricing.electricity_pricing[: len(consumption)], dtype=float)
-    solar = np.array(building.solar_generation, dtype=float)
+    # CityLearn's Building.solar_generation is a negative-value convention (generation reduces net consumption); take magnitude for a physical kW figure.
+    solar = np.abs(np.array(building.solar_generation, dtype=float))
     demand = np.array(building.non_shiftable_load, dtype=float)
 
     grid_import = np.clip(consumption, 0, None)

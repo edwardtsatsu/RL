@@ -42,6 +42,25 @@ def test_compute_episode_metrics_known_values():
     assert metrics["solar_self_consumption_pct"] == pytest.approx(expected_self_consumption_pct)
 
 
+def test_compute_episode_metrics_handles_citylearns_negative_solar_convention():
+    # CityLearn's real Building.solar_generation is negative-valued (generation
+    # reduces net consumption) — this reproduces that convention directly.
+    building = _StubBuilding(
+        consumption=[2.0, -1.0, 3.0],
+        prices=[0.1, 0.2, 0.3],
+        solar=[0.0, -3.0, 0.0],
+        demand=[2.0, 2.0, 3.0],
+    )
+
+    metrics = compute_episode_metrics(building)
+
+    # Same physical scenario as test_compute_episode_metrics_known_values (solar
+    # magnitude 3.0 at index 1), just expressed in CityLearn's real sign convention.
+    expected_self_consumption_pct = (0.0 + 2.0 + 0.0) / 3.0 * 100
+    assert metrics["solar_self_consumption_pct"] == pytest.approx(expected_self_consumption_pct)
+    assert metrics["solar_self_consumption_pct"] > 0.0
+
+
 def test_compute_episode_metrics_handles_zero_solar_without_dividing_by_zero():
     building = _StubBuilding(
         consumption=[1.0, 1.0],
