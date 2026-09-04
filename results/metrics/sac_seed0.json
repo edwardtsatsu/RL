@@ -1,0 +1,182 @@
+[
+  {
+    "grid_consumption_kwh": 58.19488129019737,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 9.215911310586282,
+    "peak_demand_kw": 9.920351028442383
+  },
+  {
+    "grid_consumption_kwh": 45.41084288991988,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 6.9083681199395315,
+    "peak_demand_kw": 5.810333251953125
+  },
+  {
+    "grid_consumption_kwh": 53.97538796067238,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 8.542811149689786,
+    "peak_demand_kw": 4.432400226593018
+  },
+  {
+    "grid_consumption_kwh": 34.06767515093088,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 2.0246600836181186,
+    "peak_demand_kw": 3.0855166912078857
+  },
+  {
+    "grid_consumption_kwh": 31.67188087850809,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": -2.264692594013766,
+    "peak_demand_kw": 3.564833402633667
+  },
+  {
+    "grid_consumption_kwh": 46.44472372345626,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 8.251591702773883,
+    "peak_demand_kw": 7.0809502601623535
+  },
+  {
+    "grid_consumption_kwh": 39.01027273386717,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 3.1378636749049686,
+    "peak_demand_kw": 3.9287872314453125
+  },
+  {
+    "grid_consumption_kwh": 65.54054237902164,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 15.720029591648391,
+    "peak_demand_kw": 6.946966648101807
+  },
+  {
+    "grid_consumption_kwh": 33.083447265438735,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 1.8989517739462927,
+    "peak_demand_kw": 2.5411999225616455
+  },
+  {
+    "grid_consumption_kwh": 38.49041934683919,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 2.254086609890521,
+    "peak_demand_kw": 5.974330425262451
+  },
+  {
+    "grid_consumption_kwh": 38.606420055031776,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 3.4625834223787733,
+    "peak_demand_kw": 3.179490089416504
+  },
+  {
+    "grid_consumption_kwh": 65.42136735655367,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 9.965835328596924,
+    "peak_demand_kw": 4.738949775695801
+  },
+  {
+    "grid_consumption_kwh": 69.14045050740242,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 11.402088167251431,
+    "peak_demand_kw": 8.601149559020996
+  },
+  {
+    "grid_consumption_kwh": 50.867281408049166,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 2.7111980467272394,
+    "peak_demand_kw": 5.78062629699707
+  },
+  {
+    "grid_consumption_kwh": 58.06082422286272,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 10.025139321731615,
+    "peak_demand_kw": 3.876307249069214
+  },
+  {
+    "grid_consumption_kwh": 49.79355401545763,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 3.892110375900874,
+    "peak_demand_kw": 4.081276893615723
+  },
+  {
+    "grid_consumption_kwh": 55.96044813841581,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 8.76556925705859,
+    "peak_demand_kw": 3.7585501670837402
+  },
+  {
+    "grid_consumption_kwh": 48.55405406653881,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 7.100551830617193,
+    "peak_demand_kw": 3.2689833641052246
+  },
+  {
+    "grid_consumption_kwh": 64.50197348371148,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 12.808138122599514,
+    "peak_demand_kw": 9.038999557495117
+  },
+  {
+    "grid_consumption_kwh": 55.693977765738964,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 10.080773948478729,
+    "peak_demand_kw": 6.157485008239746
+  },
+  {
+    "grid_consumption_kwh": 63.888855658471584,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 9.34108623277363,
+    "peak_demand_kw": 3.993499994277954
+  },
+  {
+    "grid_consumption_kwh": 59.84929247200489,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 12.306097627635944,
+    "peak_demand_kw": 4.674986839294434
+  },
+  {
+    "grid_consumption_kwh": 83.52705530822277,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 22.349753347059035,
+    "peak_demand_kw": 5.195549964904785
+  },
+  {
+    "grid_consumption_kwh": 70.90476770699024,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 18.36834065847094,
+    "peak_demand_kw": 3.9972667694091797
+  },
+  {
+    "grid_consumption_kwh": 51.93486385047436,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 6.899725547713574,
+    "peak_demand_kw": 6.212900161743164
+  },
+  {
+    "grid_consumption_kwh": 73.21144577115774,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 13.364549552255447,
+    "peak_demand_kw": 4.310306072235107
+  },
+  {
+    "grid_consumption_kwh": 80.9205422271043,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 21.988984866312077,
+    "peak_demand_kw": 4.944854736328125
+  },
+  {
+    "grid_consumption_kwh": 83.56120303273201,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 13.147885194666834,
+    "peak_demand_kw": 4.73084831237793
+  },
+  {
+    "grid_consumption_kwh": 72.54215946007753,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 16.59031988815851,
+    "peak_demand_kw": 7.053789138793945
+  },
+  {
+    "grid_consumption_kwh": 80.94418277218938,
+    "solar_self_consumption_pct": 0.0,
+    "electricity_cost": 15.051087414954218,
+    "peak_demand_kw": 5.771444320678711
+  }
+]
