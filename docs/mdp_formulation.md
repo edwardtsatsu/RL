@@ -232,13 +232,17 @@ learn at this training budget (§7 below).
 
 Not part of the MDP itself, but recorded here because it affects what
 "the trained policy" actually saw: `configs/sac_config.yaml` sets
-`total_timesteps: 150000` per seed and `seeds: [0, 1, 2]`. Since one
-training episode is 6552 steps, 150,000 steps is roughly 22–23 episodes
-through the training window per seed (SB3 stops mid-episode once the step
-budget is reached, so the last partial episode is not separately logged).
-This training budget is explicitly scoped down from published-benchmark
-scale, per the exam's own compute-constraint allowance, and is not hidden
-in the report.
+`total_timesteps: 150000` per seed and `seeds: [0, 1, 2]`. One training
+episode takes exactly 6551 `env.step()` calls to reach `terminated=True`
+(§4; the window covers 6552 time steps, but `reset()` already returns the
+observation for the first one, so only 6551 further steps are needed to
+reach the last). `results/logs/seed{N}.monitor.csv` confirms each logged
+episode has length 6551. 150,000 steps is therefore 22 complete episodes
+per seed (22 × 6551 = 144,122 logged steps), plus a final partial episode
+(5,878 steps) that SB3 does not log to `Monitor` because it never reaches
+`terminated`/`truncated`. This training budget is explicitly scoped down
+from published-benchmark scale, per the exam's own compute-constraint
+allowance, and is not hidden in the report.
 
 ## 8. Markov property
 
